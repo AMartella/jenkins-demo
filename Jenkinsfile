@@ -1,17 +1,28 @@
 pipeline {
   agent any
 
+  environment {
+    DOCKER_IMAGE = "amartella75/fastify-demo"
+    DOCKER_TAG = "v1"
+  }
+
   stages {
+
     stage('Build Docker Image') {
       steps {
-        echo "Building Docker Image"
+        script {
+          docker.build DOCKER_IMAGE:DOCKER_TAG
+        }
       }
     }
 
     stage('Push to Registry') {
+      environment {
+        REGISTRY_CREDENTIALS = "dockerhublogin"
+      }
       steps {
         script {
-          echo "Pushing to Docker Hub"
+            DOCKER_IMAGE.push("latest")
         }
       }
     }
@@ -19,18 +30,17 @@ pipeline {
     stage ('Test') {
       steps {
         script {
-            echo "Testing change"
+            docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").inside {
+                sh "npm test"
+            }
         }
       }
     }
 
     stage('Deploy') {
       steps {
-        script {
-            echo "Deploying"
-        }
+        sh "docker run -d -p 3000:3000 ${DOCKER_IMAGE}:${DOCKER_TAG}"
       }
     }
   }
 }
-
