@@ -1,13 +1,20 @@
+const fastify = require('fastify')({ logger: true });
 const _public = require('./routes/public');
 
-const fastify = require('fastify')({ logger: true });
-
-fastify.setNotFoundHandler((request, reply) => {
-    if (request.raw.url.startsWith('/api')) {
-        reply.status(404).send({ message: 'API not found' });
-    } else {
-        reply.type('text/html').sendFile('index.html');
+fastify.post('/register', {
+    schema: {
+        body: {
+            type: 'object',
+            required: ['email', 'password'],
+            properties: {
+                email: { type: 'string', format: 'email' },
+                password: { type: 'string', minLength: 6 }
+            }
+        }
     }
+}, async (request, reply) => {
+    const { email, password } = request.body;
+    reply.send({ email, password });
 });
 
 _public(fastify);
@@ -20,5 +27,10 @@ const start = async () => {
         process.exit(1);
     }
 };
+
+let count = 0;
+setInterval(() => {
+    console.log('Main thread is alive:', ++count);
+}, 1000);
 
 start();
