@@ -1,11 +1,6 @@
 pipeline {
   agent any
 
-  environment {
-    DOCKER_IMAGE = "amartella76/fastify-demo"
-    DOCKER_TAG = "v1"
-  }
-
   stages {
     stage('Build Docker Image') {
       steps {
@@ -25,13 +20,17 @@ pipeline {
       steps {
         script {
             echo "Testing"
+        }
       }
     }
 
     stage('Deploy') {
       steps {
-        echo "Deploying"
+        script {
+            echo "Deploying"
+        }
       }
     }
   }
 }
+
