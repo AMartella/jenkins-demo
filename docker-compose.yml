@@ -1,0 +1,27 @@
+services:
+  app-be:
+    build:
+      context: ./app-be
+      dockerfile: Dockerfile
+    container_name: fastify-app
+    ports:
+      - "3000:3000"
+    networks:
+      - devnet
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    ports:
+      - "8080:8080"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - devnet
+
+networks:
+  devnet:
+
+volumes:
+  jenkins_home:
