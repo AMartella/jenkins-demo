@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   environment {
-    DOCKER_IMAGE = "amartella75/fastify-demo"
+    DOCKER_IMAGE = "amartella76/fastify-demo"
     DOCKER_TAG = "v1"
   }
 
